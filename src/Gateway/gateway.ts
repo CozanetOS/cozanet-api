@@ -36,11 +36,14 @@ export class APIGateway {
     };
 
     if (provider.authType === 'bearer') {
+      // Standardized env var lookup — check GROQ_API_KEY first, then indexed variants
       let token = '';
       if (provider.id === 'groq') {
-        token = process.env.GROQ_API_KEY_1 || '';
+        token = process.env.GROQ_API_KEY || process.env.GROQ_API_KEY_1 || process.env.GROQ_API_KEY_PRIMARY || '';
       } else if (provider.id === 'openai') {
         token = process.env.OPENAI_API_KEY || '';
+      } else if (provider.id === 'anthropic') {
+        token = process.env.ANTHROPIC_API_KEY || '';
       }
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
